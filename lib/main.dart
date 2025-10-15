@@ -197,7 +197,7 @@ class StatusIconsComponent extends StatelessWidget {
         CustomPaint(
           size: Size(screenWidth, screenHeight * (0.1 + 0.15)),
           painter: DiamondPainter(
-            color: Colors.black.withValues(alpha: 0.6),
+            color: Colors.black.withOpacity(0.6),
             sidePanelWidth: sidePanelWidth,
           ),
         ),
@@ -295,7 +295,7 @@ class DateTimeComponent extends StatelessWidget {
           child: CustomPaint(
             size: Size(screenWidth - sidePanelWidth, screenHeight * 0.3),
             painter: TrapezoidPainter1(
-              color: const Color(0xFF567C8C).withValues(alpha: 0.8),
+              color: const Color(0xFF567C8C).withOpacity(0.8),
               sidePanelWidth: 0,
             ),
           ),
@@ -472,7 +472,7 @@ class SideTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFFB5C9D1).withValues(alpha: 0.9),
+      color: const Color(0xFFB5C9D1).withOpacity(0.9),
       child: RotatedBox(
         quarterTurns: 1, // 旋转TabBar使其垂直
         child: TabBar(

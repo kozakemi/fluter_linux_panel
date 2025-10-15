@@ -232,7 +232,7 @@ class _CalendarPageState extends State<CalendarPage> {
             decoration: BoxDecoration(
               color: isSelected
                   ? Colors.blue
-                  : (isToday ? Colors.blue.withValues(alpha: 0.2) : null),
+                  : (isToday ? Colors.blue.withOpacity(0.2) : null),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Center(
@@ -258,7 +258,7 @@ class _CalendarPageState extends State<CalendarPage> {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
       decoration: BoxDecoration(
-        color: Colors.blue.withValues(alpha: 0.1),
+        color: Colors.blue.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -301,7 +301,7 @@ class _CalendarPageState extends State<CalendarPage> {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.5),
+                color: Colors.white.withOpacity(0.5),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Column(
@@ -314,7 +314,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     padding:
                         const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                     decoration: BoxDecoration(
-                      color: Colors.blue.withValues(alpha: 0.2),
+                      color: Colors.blue.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -418,7 +418,7 @@ class _CalendarPageState extends State<CalendarPage> {
       padding: const EdgeInsets.all(12),
       margin: const EdgeInsets.only(top: 16),
       decoration: BoxDecoration(
-        color: Colors.blue.withValues(alpha: 0.1),
+        color: Colors.blue.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -453,7 +453,7 @@ class _CalendarPageState extends State<CalendarPage> {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             decoration: BoxDecoration(
-              color: Colors.blue.withValues(alpha: 0.2),
+              color: Colors.blue.withOpacity(0.2),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
