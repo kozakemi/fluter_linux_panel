@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 class CalendarPage extends StatefulWidget {
-  const CalendarPage({Key? key}) : super(key: key);
+  const CalendarPage({super.key});
 
   @override
   State<CalendarPage> createState() => _CalendarPageState();
@@ -13,31 +13,31 @@ class _CalendarPageState extends State<CalendarPage> {
   DateTime _selectedDate = DateTime.now();
   DateTime _focusedDate = DateTime.now();
   final DateTime _today = DateTime.now();
-  
+
   // 获取当前月份的天数
   int _getDaysInMonth(int year, int month) {
     return DateTime(year, month + 1, 0).day;
   }
-  
+
   // 获取当月第一天是星期几
   int _getFirstDayOfWeek(int year, int month) {
     return DateTime(year, month, 1).weekday % 7;
   }
-  
+
   // 计算与今天的时间间隔
   String _getTimeFromToday() {
     final difference = _selectedDate.difference(_today);
     final days = difference.inDays;
-    
+
     if (days == 0) {
       return '今天';
     } else if (days > 0) {
-      return '${days}天后';
+      return '$days天后';
     } else {
       return '${-days}天前';
     }
   }
-  
+
   // 构建日历头部
   Widget _buildCalendarHeader() {
     return Padding(
@@ -49,7 +49,8 @@ class _CalendarPageState extends State<CalendarPage> {
             icon: const Icon(Icons.chevron_left),
             onPressed: () {
               setState(() {
-                _focusedDate = DateTime(_focusedDate.year, _focusedDate.month - 1, 1);
+                _focusedDate =
+                    DateTime(_focusedDate.year, _focusedDate.month - 1, 1);
               });
             },
           ),
@@ -64,7 +65,8 @@ class _CalendarPageState extends State<CalendarPage> {
             icon: const Icon(Icons.chevron_right),
             onPressed: () {
               setState(() {
-                _focusedDate = DateTime(_focusedDate.year, _focusedDate.month + 1, 1);
+                _focusedDate =
+                    DateTime(_focusedDate.year, _focusedDate.month + 1, 1);
               });
             },
           ),
@@ -72,7 +74,7 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
     );
   }
-  
+
   // 显示年月选择器
   void _showDatePicker() {
     showModalBottomSheet(
@@ -89,7 +91,9 @@ class _CalendarPageState extends State<CalendarPage> {
                     onPressed: () => Navigator.pop(context),
                     child: const Text('取消'),
                   ),
-                  const Text('选择年月', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  const Text('选择年月',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
@@ -108,11 +112,8 @@ class _CalendarPageState extends State<CalendarPage> {
                         itemExtent: 40,
                         onSelectedItemChanged: (int index) {
                           setState(() {
-                            _focusedDate = DateTime(
-                              _today.year - 10 + index,
-                              _focusedDate.month,
-                              1
-                            );
+                            _focusedDate = DateTime(_today.year - 10 + index,
+                                _focusedDate.month, 1);
                           });
                         },
                         scrollController: FixedExtentScrollController(
@@ -134,11 +135,8 @@ class _CalendarPageState extends State<CalendarPage> {
                         itemExtent: 40,
                         onSelectedItemChanged: (int index) {
                           setState(() {
-                            _focusedDate = DateTime(
-                              _focusedDate.year,
-                              index + 1,
-                              1
-                            );
+                            _focusedDate =
+                                DateTime(_focusedDate.year, index + 1, 1);
                           });
                         },
                         scrollController: FixedExtentScrollController(
@@ -163,39 +161,40 @@ class _CalendarPageState extends State<CalendarPage> {
       },
     );
   }
-  
+
   // 构建星期标题
   Widget _buildWeekdayNames() {
     final weekdays = ['日', '一', '二', '三', '四', '五', '六'];
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: weekdays.map((day) => 
-        Expanded(
-          child: Center(
-            child: Text(
-              day,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-        )
-      ).toList(),
+      children: weekdays
+          .map((day) => Expanded(
+                child: Center(
+                  child: Text(
+                    day,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ))
+          .toList(),
     );
   }
-  
+
   // 构建日历网格
   Widget _buildCalendarGrid() {
     final daysInMonth = _getDaysInMonth(_focusedDate.year, _focusedDate.month);
-    final firstDayOfWeek = _getFirstDayOfWeek(_focusedDate.year, _focusedDate.month);
-    
+    final firstDayOfWeek =
+        _getFirstDayOfWeek(_focusedDate.year, _focusedDate.month);
+
     // 计算行数
     final rowCount = ((daysInMonth + firstDayOfWeek) / 7).ceil();
-    
+
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 7,
-        childAspectRatio: 1.3, // 进一步调整比例减少高度
+        childAspectRatio: 1.5, // 进一步调整比例减少高度
         mainAxisSpacing: 1, // 进一步减少垂直间距
         crossAxisSpacing: 1, // 进一步减少水平间距
       ),
@@ -203,25 +202,25 @@ class _CalendarPageState extends State<CalendarPage> {
       itemBuilder: (context, index) {
         // 计算日期
         final dayNumber = index + 1 - firstDayOfWeek;
-        
+
         // 检查是否在当前月份范围内
         if (dayNumber < 1 || dayNumber > daysInMonth) {
           return const SizedBox.shrink();
         }
-        
+
         // 创建日期对象
         final date = DateTime(_focusedDate.year, _focusedDate.month, dayNumber);
-        
+
         // 检查是否是今天
         final isToday = _today.year == date.year &&
-                        _today.month == date.month &&
-                        _today.day == date.day;
-        
+            _today.month == date.month &&
+            _today.day == date.day;
+
         // 检查是否是选中日期
         final isSelected = _selectedDate.year == date.year &&
-                          _selectedDate.month == date.month &&
-                          _selectedDate.day == date.day;
-        
+            _selectedDate.month == date.month &&
+            _selectedDate.day == date.day;
+
         return GestureDetector(
           onTap: () {
             setState(() {
@@ -231,14 +230,18 @@ class _CalendarPageState extends State<CalendarPage> {
           child: Container(
             margin: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.blue : (isToday ? Colors.blue.withOpacity(0.2) : null),
+              color: isSelected
+                  ? Colors.blue
+                  : (isToday ? Colors.blue.withValues(alpha: 0.2) : null),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Center(
               child: Text(
                 dayNumber.toString(),
                 style: TextStyle(
-                  color: isSelected ? Colors.white : (isToday ? Colors.blue : null),
+                  color: isSelected
+                      ? Colors.white
+                      : (isToday ? Colors.blue : null),
                   fontWeight: isSelected || isToday ? FontWeight.bold : null,
                 ),
               ),
@@ -248,14 +251,14 @@ class _CalendarPageState extends State<CalendarPage> {
       },
     );
   }
-  
+
   // 构建选中日期的详细信息
   Widget _buildSelectedDateDetails() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.1),
+        color: Colors.blue.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -270,16 +273,25 @@ class _CalendarPageState extends State<CalendarPage> {
               children: [
                 Text(
                   '选中: ${DateFormat('yyyy年MM月dd日').format(_selectedDate)}',
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '星期${['日', '一', '二', '三', '四', '五', '六'][_selectedDate.weekday % 7]}',
+                  '星期${[
+                    '日',
+                    '一',
+                    '二',
+                    '三',
+                    '四',
+                    '五',
+                    '六'
+                  ][_selectedDate.weekday % 7]}',
                   style: const TextStyle(fontSize: 13),
                 ),
-                const SizedBox(height: 4),
-                const Text('今日事项:', style: TextStyle(fontSize: 13)),
-                const Text('暂无事项', style: TextStyle(fontSize: 13)),
+                // const SizedBox(height: 4),
+                // const Text('今日事项:', style: TextStyle(fontSize: 13)),
+                // const Text('暂无事项', style: TextStyle(fontSize: 13)),
               ],
             ),
           ),
@@ -289,7 +301,7 @@ class _CalendarPageState extends State<CalendarPage> {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.5),
+                color: Colors.white.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Column(
@@ -299,9 +311,10 @@ class _CalendarPageState extends State<CalendarPage> {
                   const Text('与今天相距', style: TextStyle(fontSize: 13)),
                   const SizedBox(height: 4),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                     decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.2),
+                      color: Colors.blue.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -398,14 +411,14 @@ class _CalendarPageState extends State<CalendarPage> {
             ),
     );
   }
-  
+
   // 构建时间间隔详情（用于宽屏设备右侧显示）
   Widget _buildTimeIntervalDetails() {
     return Container(
       padding: const EdgeInsets.all(12),
       margin: const EdgeInsets.only(top: 16),
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.1),
+        color: Colors.blue.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -422,7 +435,15 @@ class _CalendarPageState extends State<CalendarPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            '星期${['日', '一', '二', '三', '四', '五', '六'][_selectedDate.weekday % 7]}',
+            '星期${[
+              '日',
+              '一',
+              '二',
+              '三',
+              '四',
+              '五',
+              '六'
+            ][_selectedDate.weekday % 7]}',
             style: const TextStyle(fontSize: 16),
           ),
           const SizedBox(height: 24),
@@ -432,7 +453,7 @@ class _CalendarPageState extends State<CalendarPage> {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.2),
+              color: Colors.blue.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
@@ -445,10 +466,10 @@ class _CalendarPageState extends State<CalendarPage> {
               textAlign: TextAlign.center,
             ),
           ),
-          const SizedBox(height: 24),
-          const Text('今日事项:', style: TextStyle(fontSize: 16)),
-          const SizedBox(height: 8),
-          const Text('暂无事项', style: TextStyle(fontSize: 14)),
+          // const SizedBox(height: 24),
+          // const Text('今日事项:', style: TextStyle(fontSize: 16)),
+          // const SizedBox(height: 8),
+          // const Text('暂无事项', style: TextStyle(fontSize: 14)),
         ],
       ),
     );

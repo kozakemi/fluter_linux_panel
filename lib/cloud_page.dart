@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CloudPage extends StatelessWidget {
-  const CloudPage({Key? key}) : super(key: key);
+  const CloudPage({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -208,14 +208,14 @@ class StatusIconsComponent extends StatelessWidget {
           builder: (context, wifiConnected, child) {
             return Positioned(
               left: (screenWidth - sidePanelWidth) / 3 -
-                  (screenHeight > screenWidth? screenWidth* 0.08 : screenHeight* 0.08 ) / 2,
+                  (0.08 * screenHeight) / 2,
               // y = x*k+b-iconSize/2
               top: ((screenWidth - sidePanelWidth) / 3 -
-                          (screenHeight > screenWidth? screenWidth* 0.08 : screenHeight* 0.08 ) / 2) *
+                          (0.08 * screenHeight) / 2) *
                       (-0.15 * screenHeight) /
                       (screenWidth - sidePanelWidth) +
                   (0.2 * screenHeight) -
-                  (screenHeight > screenWidth? screenWidth* 0.08 : screenHeight* 0.08 ) / 2,
+                  (0.08 * screenHeight) / 2,
               child: _buildStatusIcon(
                 context,
                 wifiConnected
@@ -233,13 +233,13 @@ class StatusIconsComponent extends StatelessWidget {
           builder: (context, mqttConnected, child) {
             return Positioned(
               left: (screenWidth - sidePanelWidth) / 3 * 2 -
-                  (screenHeight > screenWidth? screenWidth* 0.08 : screenHeight* 0.08 ) / 2,
+                  (0.08 * screenHeight) / 2,
               top: ((screenWidth - sidePanelWidth) / 3 * 2 -
-                          (screenHeight > screenWidth? screenWidth* 0.08 : screenHeight* 0.08 ) / 2) *
+                          (0.08 * screenHeight) / 2) *
                       (-0.15 * screenHeight) /
                       (screenWidth - sidePanelWidth) +
                   (0.2 * screenHeight) -
-                  (screenHeight > screenWidth? screenWidth* 0.08 : screenHeight* 0.08 ) / 2,
+                  (0.08 * screenHeight) / 2,
               child: _buildStatusIcon(
                 context,
                 mqttConnected
@@ -255,7 +255,7 @@ class StatusIconsComponent extends StatelessWidget {
   }
 
   Widget _buildStatusIcon(BuildContext context, String assetPath, Color color) {
-    final iconSize = screenHeight > screenWidth? screenWidth* 0.08 : screenHeight* 0.08 ;
+    final iconSize = screenHeight * 0.08;
     return SizedBox(
       width: iconSize,
       height: iconSize,
@@ -300,16 +300,22 @@ class DateTimeComponent extends StatelessWidget {
             ),
           ),
         ),
-        // 日期/星期/时间内容 - 固定在 DateTimeComponent 的底部，使用 Align + Padding
+        // 日期和星期内容 - 使用RepaintBoundary隔离，防止重绘
+        RepaintBoundary(
+          child: DateDisplayContent(
+            screenWidth: screenWidth,
+            screenHeight: screenHeight,
+          ),
+        ),
+        // 时间显示 - 单独放置，只有这部分会更新
         Positioned(
-          left: 0,
-          right: 0,
-          bottom: screenHeight*0.01,
+          right: screenWidth * 0.1,
+          bottom: 0,
           child: RepaintBoundary(
-            child: DateDisplayContent(
-              screenWidth: screenWidth,
-              screenHeight: screenHeight,
+            child: TimeOnlyDisplay(
               timeNotifier: timeNotifier,
+              screenHeight: screenHeight,
+              screenWidth: screenWidth,
             ),
           ),
         ),
@@ -322,13 +328,11 @@ class DateTimeComponent extends StatelessWidget {
 class DateDisplayContent extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;
-  final ValueNotifier<DateTime>? timeNotifier;
 
   const DateDisplayContent({
     super.key,
     required this.screenWidth,
     required this.screenHeight,
-    this.timeNotifier,
   });
 
   @override
@@ -343,77 +347,52 @@ class DateDisplayContent extends StatelessWidget {
     final day = dayFormat.format(now);
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: Row(
-          children: [
-            // 星期（左侧）
-            Expanded(
-              flex: 1,
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  day,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+      padding: EdgeInsets.only(
+        left: screenWidth * 0.1,
+        bottom: 0,
+        right: screenWidth * 0.1,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          // 左侧星期显示 - 不需要每秒更新
+          Expanded(
+            flex: 1,
+            child: Text(
+              day,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: screenHeight > screenWidth
+                    ? screenWidth * 0.04
+                    : screenHeight * 0.04,
+              ),
+              // overflow: TextOverflow.fade,
+            ),
+          ),
+          // 右侧日期显示 - 不需要每秒更新
+          Expanded(
+            flex: 2,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  date,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: screenHeight > screenWidth
                         ? screenWidth * 0.04
                         : screenHeight * 0.04,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
+                // 这里不再包含时间显示，时间显示被移到外层
+                SizedBox(height: screenHeight * 0.07), // 占位，保持布局一致
+              ],
             ),
-
-            // 日期和时间纵向排列，右对齐
-            Expanded(
-              flex: 2,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    date,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: screenHeight > screenWidth
-                          ? screenWidth * 0.04
-                          : screenHeight * 0.04,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-
-                  // 如果提供了 timeNotifier，则显示动态时间，否则仅占位
-                  if (timeNotifier != null)
-                    ValueListenableBuilder<DateTime>(
-                      valueListenable: timeNotifier!,
-                      builder: (context, currentTime, child) {
-                        final timeFormat =
-                            DateFormat(showSeconds ? 'HH:mm:ss' : 'HH:mm');
-                        final time = timeFormat.format(currentTime);
-                        return Text(
-                          time,
-                          style: TextStyle(
-                            color: const Color(0xFFDBA7AF),
-                            fontSize: screenHeight > screenWidth
-                                ? screenWidth * 0.07
-                                : screenHeight * 0.07,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        );
-                      },
-                    )
-                  else
-                    SizedBox(height: screenHeight * 0.07),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
