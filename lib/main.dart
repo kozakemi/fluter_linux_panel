@@ -7,6 +7,7 @@ import 'settings_page.dart';
 import 'calendar_page.dart';
 import 'cloud_page.dart';
 import 'loading_page.dart';
+import 'global_tap_ripple.dart';
 
 // 全局配置变量
 const bool showSeconds = true; // 控制是否显示秒
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'HarmonyOS Sans SC', // 应用中文字体
       ),
+      builder: (context, child) => GlobalTapRipple(child: child ?? const SizedBox.shrink()),
       home: const ClockScreen(),
     );
   }
@@ -208,14 +210,23 @@ class StatusIconsComponent extends StatelessWidget {
           builder: (context, wifiConnected, child) {
             return Positioned(
               left: (screenWidth - sidePanelWidth) / 3 -
-                  (screenHeight > screenWidth? screenWidth* 0.08 : screenHeight* 0.08 ) / 2,
+                  (screenHeight > screenWidth
+                          ? screenWidth * 0.08
+                          : screenHeight * 0.08) /
+                      2,
               // y = x*k+b-iconSize/2
               top: ((screenWidth - sidePanelWidth) / 3 -
-                          (screenHeight > screenWidth? screenWidth* 0.08 : screenHeight* 0.08 ) / 2) *
+                          (screenHeight > screenWidth
+                                  ? screenWidth * 0.08
+                                  : screenHeight * 0.08) /
+                              2) *
                       (-0.15 * screenHeight) /
                       (screenWidth - sidePanelWidth) +
                   (0.2 * screenHeight) -
-                  (screenHeight > screenWidth? screenWidth* 0.08 : screenHeight* 0.08 ) / 2,
+                  (screenHeight > screenWidth
+                          ? screenWidth * 0.08
+                          : screenHeight * 0.08) /
+                      2,
               child: _buildStatusIcon(
                 context,
                 wifiConnected
@@ -233,13 +244,22 @@ class StatusIconsComponent extends StatelessWidget {
           builder: (context, mqttConnected, child) {
             return Positioned(
               left: (screenWidth - sidePanelWidth) / 3 * 2 -
-                  (screenHeight > screenWidth? screenWidth* 0.08 : screenHeight* 0.08 ) / 2,
+                  (screenHeight > screenWidth
+                          ? screenWidth * 0.08
+                          : screenHeight * 0.08) /
+                      2,
               top: ((screenWidth - sidePanelWidth) / 3 * 2 -
-                          (screenHeight > screenWidth? screenWidth* 0.08 : screenHeight* 0.08 ) / 2) *
+                          (screenHeight > screenWidth
+                                  ? screenWidth * 0.08
+                                  : screenHeight * 0.08) /
+                              2) *
                       (-0.15 * screenHeight) /
                       (screenWidth - sidePanelWidth) +
                   (0.2 * screenHeight) -
-                  (screenHeight > screenWidth? screenWidth* 0.08 : screenHeight* 0.08 ) / 2,
+                  (screenHeight > screenWidth
+                          ? screenWidth * 0.08
+                          : screenHeight * 0.08) /
+                      2,
               child: _buildStatusIcon(
                 context,
                 mqttConnected
@@ -255,7 +275,8 @@ class StatusIconsComponent extends StatelessWidget {
   }
 
   Widget _buildStatusIcon(BuildContext context, String assetPath, Color color) {
-    final iconSize = screenHeight > screenWidth? screenWidth* 0.08 : screenHeight* 0.08 ;
+    final iconSize =
+        screenHeight > screenWidth ? screenWidth * 0.08 : screenHeight * 0.08;
     return SizedBox(
       width: iconSize,
       height: iconSize,
@@ -304,7 +325,7 @@ class DateTimeComponent extends StatelessWidget {
         Positioned(
           left: 0,
           right: 0,
-          bottom: screenHeight*0.01,
+          bottom: screenHeight * 0.01,
           child: RepaintBoundary(
             child: DateDisplayContent(
               screenWidth: screenWidth,
