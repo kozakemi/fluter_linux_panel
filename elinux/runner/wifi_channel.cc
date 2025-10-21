@@ -92,6 +92,19 @@ static EncodableMap WifiStatus() {
   return status;
 }
 
+static bool WifiConnect(const std::string& ssid, const std::string& password) {
+  if (ssid.empty()) return false;
+  std::string cmd = std::string("nmcli device wifi connect \"") + ssid + "\"";
+  if (!password.empty()) {
+    cmd += std::string(" password \"") + password + "\"";
+  }
+  // capture stderr
+  auto out = RunCmd(cmd + " 2>&1");
+  // Verify active connections contain the SSID
+  auto active = RunCmd("nmcli -t -f NAME,DEVICE connection show --active");
+  return active.find(ssid) != std::string::npos;
+}
+
 void RegisterWifiChannel(flutter::FlutterViewController* controller) {
   if (!controller || !controller->engine()) return;
   auto messenger = controller->engine()->messenger();
@@ -120,6 +133,25 @@ void RegisterWifiChannel(flutter::FlutterViewController* controller) {
         } else if (method == "status") {
           auto st = WifiStatus();
           result->Success(EncodableValue(st));
+          return;
+        } else if (method == "connect") {
+          std::string ssid;
+          std::string password;
+          if (args) {
+            auto itSsid = args->find(EncodableValue("ssid"));
+            if (itSsid != args->end()) {
+              if (const std::string* s = std::get_if<std::string>(&itSsid->second)) ssid = *s;
+            }
+            auto itPwd = args->find(EncodableValue("password"));
+            if (itPwd != args->end()) {
+              if (const std::string* p = std::get_if<std::string>(&itPwd->second)) password = *p;
+            }
+          }
+          bool ok = WifiConnect(ssid, password);
+          EncodableMap res;
+          res[EncodableValue("ok")] = EncodableValue(ok);
+          res[EncodableValue("ssid")] = EncodableValue(ssid);
+          result->Success(EncodableValue(res));
           return;
         }
         result->NotImplemented();

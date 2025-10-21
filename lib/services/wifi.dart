@@ -41,4 +41,19 @@ class WiFiService {
     final List<dynamic> res = await _channel.invokeMethod('scan');
     return res.map((e) => Map<String, dynamic>.from(e as Map)).toList();
   }
+
+  static Future<bool> connect(String ssid, String password) async {
+    if (kIsWeb) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      return true;
+    }
+    final Map<dynamic, dynamic> res = await _channel.invokeMethod(
+      'connect',
+      {
+        'ssid': ssid,
+        'password': password,
+      },
+    );
+    return (res['ok'] as bool?) ?? false;
+  }
 }
