@@ -16,7 +16,7 @@ const bool showSeconds = true; // 控制是否显示秒
 const double sidePanelWidthRatio = 0.2; // 侧边栏宽度占屏幕宽度的比例
 
 void main() {
-  debugRepaintRainbowEnabled = true;
+  // debugRepaintRainbowEnabled = true;
   runApp(const MyApp());
 }
 
@@ -27,13 +27,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Anime Clock',
-      debugShowCheckedModeBanner: false,
+      // debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
         fontFamily: 'HarmonyOS Sans SC', // 应用中文字体
       ),
-      builder: (context, child) => GlobalTapRipple(child: child ?? const SizedBox.shrink()),
+      builder: (context, child) =>
+          GlobalTapRipple(child: child ?? const SizedBox.shrink()),
+      routes: {
+        '/settings': (context) => const SettingsPage(),
+      },
       home: const ClockScreen(),
     );
   }

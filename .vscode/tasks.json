@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build:elinux-x11",
+      "type": "shell",
+      "command": "flutter-elinux build elinux --target-arch=x64 --target-backend-type=x11",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "run:elinux-x11",
+      "type": "shell",
+      "dependsOn": "build:elinux-x11",
+      "command": "./demo1 --bundle=. --fullscreen",
+      "options": { "cwd": "${workspaceFolder}/build/elinux/x64/release/bundle" },
+      "problemMatcher": []
+    },
+    {
+      "label": "run:elinux-x11-sw",
+      "type": "shell",
+      "dependsOn": "build:elinux-x11",
+      "command": "LIBGL_ALWAYS_SOFTWARE=1 ./demo1 --bundle=. --fullscreen --enable-software-rendering",
+      "options": { "cwd": "${workspaceFolder}/build/elinux/x64/release/bundle" },
+      "problemMatcher": []
+    }
+  ]
+}

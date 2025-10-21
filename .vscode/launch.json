@@ -7,6 +7,36 @@
       "type": "dart",
       "program": "lib/main.dart",
       "args": ["-d", "chrome"]
+    },
+    {
+      "name": "eLinux X11 (Build+Run, Release)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/elinux/x64/release/bundle/demo1",
+      "args": ["--bundle=.", "--fullscreen"],
+      "cwd": "${workspaceFolder}/build/elinux/x64/release/bundle",
+      "stopAtEntry": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "preLaunchTask": "build:elinux-x11",
+      "environment": [
+        { "name": "LIBGL_ALWAYS_SOFTWARE", "value": "0" }
+      ]
+    },
+    {
+      "name": "eLinux X11 (Build+Run, Software Rendering)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/elinux/x64/release/bundle/demo1",
+      "args": ["--bundle=.", "--fullscreen", "--enable-software-rendering"],
+      "cwd": "${workspaceFolder}/build/elinux/x64/release/bundle",
+      "stopAtEntry": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "preLaunchTask": "build:elinux-x11",
+      "environment": [
+        { "name": "LIBGL_ALWAYS_SOFTWARE", "value": "1" }
+      ]
     }
   ]
 }
